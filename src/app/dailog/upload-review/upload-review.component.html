@@ -1,0 +1,42 @@
+<h2 mat-dialog-title style="font-size: 16px; font-weight: 500;">Review Uploads</h2>
+
+<mat-dialog-content>
+  <!-- Folders -->
+<div *ngIf="folders.length > 0">
+  <h3 style="font-size: 14px;">Folders</h3>
+  <mat-list>
+    <mat-list-item *ngFor="let folder of folders; let i = index" class="compact-item">
+      <mat-icon matListIcon class="small-icon">folder</mat-icon>
+      <span class="item-text">{{ folder.name }}</span>
+      
+      <button mat-icon-button class="remove-btn" (click)="removeFolder(i)" [disabled]="uploading">
+        <mat-icon class="remove-icon">close</mat-icon>
+      </button>
+      <mat-progress-bar *ngIf="uploading" [value]="folderProgress[i]" mode="determinate"></mat-progress-bar>
+    </mat-list-item>
+    
+  </mat-list>
+</div>
+
+<!-- Files -->
+<div *ngIf="files.length > 0" style="margin-top: 8px;">
+  <h3 style="font-size: 14px;">Files</h3>
+  <mat-list-item *ngFor="let file of files; let i = index" class="compact-item">
+  <div class="item-row">
+    <div class="item-info">
+      <mat-icon class="small-icon">insert_drive_file</mat-icon>
+      <span class="item-text">{{ file.name }}</span>
+    </div>
+    <button mat-icon-button class="remove-btn" (click)="removeFile(i)" [disabled]="uploading">
+      <mat-icon class="remove-icon">close</mat-icon>
+    </button>
+  </div>
+  <mat-progress-bar *ngIf="uploading" [value]="fileProgress[i]" mode="determinate"></mat-progress-bar>
+</mat-list-item>
+</div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="save()" [disabled]="uploading && files.length === 0 && folders.length === 0">Upload</button>
+</mat-dialog-actions>

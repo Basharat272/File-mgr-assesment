@@ -1,0 +1,23 @@
+ <h2 mat-dialog-title>Details</h2>
+
+    <mat-dialog-content>
+      <!-- Show file details -->
+      <div *ngIf="isFile">
+        <mat-list>
+          <mat-list-item title="{{ fileData.name }}"><strong>Name:</strong> {{ fileData.name }}</mat-list-item>
+          <mat-list-item><strong>Size:</strong> {{ formatSize(fileData.size) }}</mat-list-item>
+          <mat-list-item><strong>Type:</strong> {{ fileData.type ? fileData.type : 'Folder' }}</mat-list-item>
+          <mat-list-item><strong>Created At:</strong> {{ fileData.createdAt | date: 'short' }}</mat-list-item>
+          <mat-list-item>
+            <strong>Shared:</strong>
+            <mat-icon [color]="fileData.shared ? 'primary' : 'warn'">
+              {{ fileData.shared ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>

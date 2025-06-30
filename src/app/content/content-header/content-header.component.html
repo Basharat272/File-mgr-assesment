@@ -1,0 +1,36 @@
+<div class="content-header">
+  <div class="title">My Storage</div>
+
+  <div class="header-icons">
+    <mat-icon class="icon">search</mat-icon>
+    <mat-icon class="icon" (click)="toggleView()">
+      {{ isGridView ? 'view_list' : 'view_module' }}
+    </mat-icon>
+    <mat-icon class="icon" (click)="toggleSort()" matTooltip="Sort A–Z / Z–A">swap_vert</mat-icon>
+    <mat-icon class="icon">format_align_center</mat-icon>
+    <button mat-raised-button color="primary"
+      style="background-color: rgb(9, 179, 247); border-radius: 20px; padding: 4px 12px;" [matMenuTriggerFor]="menu">
+      <mat-icon style="margin-right: 4px;">add</mat-icon>
+      Add New
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openFolderDialog()">
+        <mat-icon>create_new_folder</mat-icon>
+        <span>Create New Folder</span>
+      </button>
+      <button mat-menu-item (click)="onFolderUpload()">
+        <mat-icon>folder_open</mat-icon>
+        <span>Upload Folder</span>
+      </button>
+      <button mat-menu-item (click)="onFileUpload()">
+        <mat-icon>upload_file</mat-icon>
+        <span>Upload File</span>
+      </button>
+    </mat-menu>
+
+  </div>
+</div>
+
+<input type="file" #fileInput multiple (change)="handleFileSelection($event)" hidden>
+<input type="file" #folderInput webkitdirectory directory (change)="handleFolderSelection($event)" hidden>

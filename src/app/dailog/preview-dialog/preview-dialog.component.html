@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>{{ data.file.name }}</h2>
+<mat-dialog-content class="preview-content">
+
+  <!-- PDF Preview -->
+  <ng-container *ngIf="isPdf(data.file)">
+    <iframe [src]="safeUrl" width="100%" height="600px" frameborder="0"></iframe>
+  </ng-container>
+
+  <!-- Image Preview -->
+  <ng-container *ngIf="isImage(data.file)">
+    <img [src]="data.fileUrl" alt="{{ data.file.name }}" class="img-fluid w-100" />
+  </ng-container>
+
+  <!-- Text File Preview -->
+  <ng-container *ngIf="isText(data.file)">
+    <pre class="text-muted">{{ fileTextContent }}</pre>
+  </ng-container>
+
+  <!-- Unsupported -->
+  <ng-container *ngIf="isUnsupported(data.file)">
+    <p class="text-danger">Preview not supported for this file type.</p>
+  </ng-container>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

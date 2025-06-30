@@ -1,0 +1,43 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: black;
+  height: 60px;
+  padding: 0 2rem;
+
+  .logo {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Arial', sans-serif;
+    line-height: 1;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+  }
+
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    .icon {
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .profile {
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+  }
+}

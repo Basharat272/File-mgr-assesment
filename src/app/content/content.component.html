@@ -1,0 +1,182 @@
+<app-content-header (viewToggle)="onViewToggle($event)" (sortToggle)="onSortToggle($event)">
+</app-content-header>
+
+<div class="container py-4">
+
+  <!-- Empty State -->
+  <div class="text-center my-5" *ngIf="isTrulyEmpty">
+    <img src="assets/images/laptop-folder.png" alt="Empty Storage" style="max-width: 180px;" class="mb-3" />
+    <div class="mb-2">
+      <h5>No files in your storage yet.</h5>
+      <p>Drag and drop your files or click the button to upload.</p>
+    </div>
+    <button class="btn btn-primary rounded-pill" (click)="onFileUpload()">
+      <i class="bi bi-plus-circle me-2"></i>
+      Add Files
+    </button>
+  </div>
+
+  <!-- Back Button -->
+  <button *ngIf="currentFolder" class="btn btn-link mb-3" (click)="goBack()">← Back to Storage</button>
+
+  <!-- Folders Section -->
+  <div *ngIf="folders.length > 0">
+    <h5 class="mb-3">Folders</h5>
+
+    <!-- Grid View *ngIf="viewMode === 'grid'"  -->
+    <div class="folder-grid">
+      <div class="folder-card" *ngFor="let folder of folders;" (dblclick)="goToFolder(folder)">
+        <button mat-icon-button [matMenuTriggerFor]="folderMenu" class="position-absolute top-0 end-0 m-1">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <div class="text-center">
+          <div class="file-preview d-flex align-items-center justify-content-center">
+            <i class="bi" [ngClass]="folderFiles.get(folder.name)?.length ? 'bi-folder-fill' : 'bi-folder'"
+              class="fs-2 text-warning"></i>
+          </div>
+          <div class="fw-semibold" title="{{ folder.name }}">{{ folder.name }}</div>
+          <div class="small text-muted-f">
+            {{ getFolderSize(folder) }}
+          </div>
+          <!-- · {{ getFolderDate(folder) }} -->
+        </div>
+
+        <mat-menu #folderMenu="matMenu">
+          <button mat-menu-item (click)="viewDetails(folder)">View Details</button>
+          <button mat-menu-item (click)="renameFolder(folder.name)">Rename</button>
+          <button mat-menu-item (click)="toggleShare(folder)">
+            {{ folder.shared ? 'Unshare' : 'Share' }}
+          </button>
+          <button mat-menu-item (click)="downloadFolder(folder)">Download</button>
+          <button mat-menu-item (click)="copyFolderLink(folder)">Copy Link</button>
+          <button mat-menu-item (click)="deleteFolder(folder.name)">Delete</button>
+        </mat-menu>
+      </div>
+
+    </div>
+
+
+  </div>
+
+  <!-- Files Section -->
+  <div *ngIf="files.length > 0" class="mt-4">
+    <h5 class="mb-3">Files</h5>
+
+    <!-- Grid View -->
+    <div *ngIf="viewMode === 'grid'" class="file-grid">
+      <div class="file-card position-relative p-2" *ngFor="let file of files; trackBy: trackByFileId"
+        style="overflow: hidden;">
+        <div class="file-preview" (dblclick)="openFile(file)" title="{{file.name}}">
+          <ng-container *ngIf="isImage(file); else fallbackIcon">
+            <img [src]="previewMap.get(file.name)" [alt]="file.name" class="preview-img" />
+          </ng-container>
+          <ng-template #fallbackIcon>
+            <i class="bi bi-file-earmark fs-2 text-primary"></i>
+          </ng-template>
+        </div>
+
+        <div class="small text-truncate mt-2" title="{{file.name}}">{{ file.name }}</div>
+        <div class="text-muted small">{{ formatFileSize(file.size) }}</div>
+
+        <!-- Menu Button Positioned Bottom Right -->
+        <button mat-icon-button class="position-absolute" style="bottom: -2px; right: -8px"
+          [matMenuTriggerFor]="fileMenu" (click)="selectedFile = file">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #fileMenu="matMenu">
+          <button mat-menu-item (click)="viewDetails(file)">View Details</button>
+          <button mat-menu-item (click)="renameFile(file)">Rename</button>
+          <!-- <button mat-menu-item (click)="shareFile(file)">Share</button> -->
+          <button mat-menu-item (click)="toggleShare(file)">
+            {{ file.shared ? 'Unshare' : 'Share' }}
+          </button>
+          <button mat-menu-item (click)="moveFile(file)"> Move to Folder</button>
+          <button mat-menu-item (click)="downloadFile(file)">Download</button>
+          <button mat-menu-item (click)="copyLink(file)">Copy Link</button>
+          <button mat-menu-item (click)="deleteFile(file)">Delete</button>
+        </mat-menu>
+      </div>
+
+    </div>
+
+    <!-- List View -->
+    <div *ngIf="viewMode === 'list'" class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th></th>
+            <th>File Name</th>
+            <th>Size</th>
+            <th>Uploaded On</th>
+            <th>Type</th>
+            <th>Shared</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let file of files; trackBy: trackByFileId">
+            <td>
+              <ng-container *ngIf="isImage(file); else fileIcon">
+                <img [src]="previewMap.get(file.name)" class="me-2" style="height: 32px;" (dblclick)="openFile(file)" />
+              </ng-container>
+            </td>
+            <td title="{{file.name}}">
+              <ng-template #fileIcon>
+                <i class="bi bi-file-earmark me-2"></i>
+              </ng-template>
+              {{ file.name }}
+            </td>
+            <td>{{ formatFileSize(file.size) }}</td>
+            <td>{{ file.createdAt | date: 'mediumDate' }}</td>
+            <td>{{ file.type }}</td>
+            <td>
+              <i class="bi" [ngClass]="file.shared ? 'bi-check-circle text-success' : 'bi-x-circle text-danger'">
+              </i>
+            </td>
+            <td class="text-end">
+              <button mat-icon-button [matMenuTriggerFor]="fileMenu" (click)="selectedFile = file">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </td>
+            <!-- Shared file menu -->
+            <mat-menu #fileMenu="matMenu">
+              <button mat-menu-item (click)="viewDetails(file)">View Details</button>
+              <button mat-menu-item (click)="renameFile(file)">Rename</button>
+              <button mat-menu-item (click)="toggleShare(file)">
+                {{ file.shared ? 'Unshare' : 'Share' }}
+              </button>
+              <button mat-menu-item (click)="moveFile(file)"> Move to Folder</button>
+              <button mat-menu-item (click)="downloadFile(file)">Download</button>
+              <button mat-menu-item (click)="copyLink(file)">Copy Link</button>
+              <button mat-menu-item (click)="deleteFile(file)">Delete</button>
+
+            </mat-menu>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+  </div>
+
+  <!-- Empty Folder Message -->
+  <div class="text-center" *ngIf="!isTrulyEmpty && isEmptyFolder">
+    <img src="assets/images/no-file.png" alt="Empty Storage" style="max-width: 130px;" class="mb-0" />
+    <div class="mb-1">
+      <h5 style="font-size: small;">No files in your folder yet.</h5>
+      <p style="font-size: smaller;">Drag and drop your files or click the button to upload.</p>
+    </div>
+    <button class="btn btn-primary rounded-pill" (click)="onFileUpload()">
+      <i class="bi bi-plus-circle me-2"></i>
+      Add Files
+    </button>
+    <!-- <button mat-menu-item (click)="onFileUpload()">
+        <mat-icon>upload_file</mat-icon>
+        <span>Upload File</span>
+      </button> -->
+  </div>
+
+</div>
+<input type="file" #fileInput multiple (change)="handleFileSelection($event)" hidden>

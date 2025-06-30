@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Move File</h1>
+    <div mat-dialog-content>
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Select Folder</mat-label>
+        <mat-select [(value)]="selectedFolder">
+          <mat-option *ngFor="let folder of folders" [value]="folder.name">
+            {{ folder.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div mat-dialog-actions align="end">
+      <button mat-button (click)="dialogRef.close()">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="!selectedFolder" (click)="dialogRef.close(selectedFolder)">Move</button>
+    </div>

@@ -1,0 +1,45 @@
+mat-list-item.compact-item {
+  display: flex;
+  align-items: stretch;
+  padding: 6px 10px;
+
+  .item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      overflow: hidden;
+
+      .small-icon {
+        font-size: 18px;
+        margin-right: 8px;
+      }
+
+      .item-text {
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .remove-btn {
+      padding: 0;
+      width: 28px;
+      height: 28px;
+
+      .remove-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  mat-progress-bar {
+    margin-top: 4px;
+  }
+}

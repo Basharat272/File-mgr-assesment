@@ -1,0 +1,42 @@
+<div class="container py-4">
+
+  <button class="btn btn-link mb-3" (click)="goBack()">← Back to Storage</button>
+  
+  <h5>{{ folderName }}</h5>
+  <div class="text-center" *ngIf="files.length == 0">
+    <div class="mt-5">
+      <h5 style="font-size: small;">Empty Folder.</h5>
+    </div>
+  </div>
+
+  <!-- Grid View -->
+  <div *ngIf="viewMode === 'grid'" class="file-grid">
+    <div class="file-card position-relative p-2" *ngFor="let file of files" style="overflow: hidden;">
+      <div class="file-preview" (dblclick)="openFile(file)" title="{{file.name}}">
+        <ng-container *ngIf="isImage(file); else fallbackIcon">
+          <img [src]="previewMap.get(file.name)" [alt]="file.name" class="preview-img" />
+        </ng-container>
+        <ng-template #fallbackIcon>
+          <i class="bi bi-file-earmark fs-2 text-primary"></i>
+        </ng-template>
+      </div>
+      <div class="small text-truncate mt-2">{{ file.name }}</div>
+      <div class="text-muted small">{{ formatFileSize(file.size) }}</div>
+      <button mat-icon-button class="position-absolute" style="bottom: -2px; right: -8px" [matMenuTriggerFor]="fileMenu"
+        (click)="selectedFile = file">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #fileMenu="matMenu">
+        <button mat-menu-item (click)="viewDetails(file)">View Details</button>
+        <button mat-menu-item (click)="renameFile(file)">Rename</button>
+        <button mat-menu-item (click)="toggleShare(file)">
+          {{ file.shared ? 'Unshare' : 'Share' }}
+        </button>
+        <button mat-menu-item (click)="downloadFile(file)">Download</button>
+            <button mat-menu-item (click)="copyLink(file)">Copy Link</button>
+        <button mat-menu-item (click)="deleteFile(file)">Delete</button>
+      </mat-menu>
+    </div>
+  </div>
+
+</div>

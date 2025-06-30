@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Enter Folder Name</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="outline" style="width: 100%;">
+    <input matInput placeholder="Folder name" [(ngModel)]="folderName" [ngModelOptions]="{standalone: true}"/>
+  </mat-form-field>
+</mat-dialog-content>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onCreate()">Create</button>
+</div>
